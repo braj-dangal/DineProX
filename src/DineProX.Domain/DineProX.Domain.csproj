@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DineProX.Application.Contracts\DineProX.Application.Contracts.csproj" />
     <ProjectReference Include="..\DineProX.Domain.Shared\DineProX.Domain.Shared.csproj" />
   </ItemGroup>
 

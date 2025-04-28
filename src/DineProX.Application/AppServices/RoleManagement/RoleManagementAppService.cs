@@ -1,15 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DineProX.Constants.RoleManagement;
+using DineProX.Dtos.ResponseDtos;
+using DineProX.Dtos.RoleManagement;
+using DineProX.Entities.RoleManagement;
+using DineProX.Interfaces.RoleManagement;
+using DineProX.Permissions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TISAPayrollManagement.Constants.RoleManagement;
-using TISAPayrollManagement.Dtos.ResponseDtos;
-using TISAPayrollManagement.Dtos.RoleManagement;
-using TISAPayrollManagement.Entities.RoleManagement;
-using TISAPayrollManagement.Interface.RoleManagement;
-using TISAPayrollManagement.Permissions;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -56,7 +56,7 @@ namespace DineProX.AppServices.RoleManagement
             _logger = logger;
         }
 
-        [Authorize(TISAPayrollManagementPermissions.Role.Role_Create)]
+        [Authorize(DineProXPermissions.Role.Role_Create)]
         public async Task<ResponseDto<GetRolesDto>> CreateRoleAsync(CreateRoleDto input)
         {
             try
@@ -141,8 +141,8 @@ namespace DineProX.AppServices.RoleManagement
                 throw new UserFriendlyException(ex.Message);
             }
         }
-        [HttpGet]
-        [Authorize(TISAPayrollManagementPermissions.Role.Default)]
+        //[HttpGet]
+        [Authorize(DineProXPermissions.Role.Default)]
         public async Task<PagedResultDto<GetAllRolesDto>> GetPagedAndSortedRoleListAsync(SerachDto input)
         {
             try
@@ -244,7 +244,7 @@ namespace DineProX.AppServices.RoleManagement
             }
         }
 
-        [Authorize(TISAPayrollManagementPermissions.Role.Default)]
+        [Authorize(DineProXPermissions.Role.Default)]
         public async Task<GetRolesDto> GetRoleByIdAsync(Guid Id)
         {
             try
@@ -282,7 +282,7 @@ namespace DineProX.AppServices.RoleManagement
             }
         }
 
-        [Authorize(TISAPayrollManagementPermissions.Role.Role_Edit)]
+        [Authorize(DineProXPermissions.Role.Role_Edit)]
         public async Task<ResponseDto<GetRolesDto>> UpdateRoleAsync(Guid Id, CreateRoleDto input)
         {
             try
@@ -421,7 +421,7 @@ namespace DineProX.AppServices.RoleManagement
             }
         }
 
-        [Authorize(TISAPayrollManagementPermissions.Role.Role_Deactivate)]
+        [Authorize(DineProXPermissions.Role.Role_Deactivate)]
         public async Task<ResponseDto<GetRolesDto>> UpdateRoleStatusAsync(StatusDto input)
         {
             try

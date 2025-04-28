@@ -1,3 +1,4 @@
+using DineProX.Entities.RoleManagement;
 ﻿using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
@@ -41,6 +42,7 @@ public class DineProXDbContext :
     //Identity
     public DbSet<IdentityUser> Users { get; set; }
     public DbSet<IdentityRole> Roles { get; set; }
+    public DbSet<IdentityUserRole> UserRoles { get; set; }
     public DbSet<IdentityClaimType> ClaimTypes { get; set; }
     public DbSet<OrganizationUnit> OrganizationUnits { get; set; }
     public DbSet<IdentitySecurityLog> SecurityLogs { get; set; }
@@ -53,6 +55,10 @@ public class DineProXDbContext :
 
     #endregion
 
+   #region Non Abp Entities
+    //Role,Notificatio
+    public DbSet<RoleExtension> RoleExtensions { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
     public DineProXDbContext(DbContextOptions<DineProXDbContext> options)
         : base(options)
     {
@@ -62,6 +68,24 @@ public class DineProXDbContext :
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        builder.Entity<Notification>(b =>
+        {
+            b.ToTable("Notifications");
+            b.ConfigureByConvention();
+            b.HasOne<IdentityUser>().WithMany().HasForeignKey(x => x.ReceiverId).IsRequired();
+            b.Property(x => x.Template).HasMaxLength(5000).IsRequired();
+        });
+
+        builder.Entity<RoleExtension>(b =>
+        {
+            b.ToTable("RoleExtensions");
+            b.ConfigureByConvention();
+            b.HasOne<IdentityRole>().WithMany().HasForeignKey(x => x.AbpRoleId).IsRequired();
+            b.Property(x => x.AbpRoleName).HasMaxLength(50).IsRequired();
+            b.Property(x => x.Description).HasMaxLength(500).IsRequired(false);
+            b.Property(x => x.IsActive).IsRequired(false);
+        });
 
         /* Include modules to your migration db context */
 

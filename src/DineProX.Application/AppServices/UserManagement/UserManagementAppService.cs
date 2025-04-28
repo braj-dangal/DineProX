@@ -8,13 +8,6 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
-//using TISAPayrollManagement.Constants.RoleManagement;
-//using TISAPayrollManagement.Dtos.ResponseDtos;
-//using TISAPayrollManagement.Dtos.UserManagement;
-//using TISAPayrollManagement.Entities.Notification;
-//using TISAPayrollManagement.Entities.RoleManagement;
-//using TISAPayrollManagement.Interface.UserManagement;
-//using TISAPayrollManagement.Permissions;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -23,16 +16,19 @@ using Volo.Abp.Emailing;
 using Volo.Abp.Security.Encryption;
 using System.Security.Cryptography;
 using Volo.Abp.Identity;
-using TISAPayrollManagement.Dtos.Notifications;
-using Volo.Abp.Data;
-using Microsoft.AspNetCore.Routing;
-using DineProX.AppServices.UserManagement;
 using DineProX.Interfaces.UserManagement;
+using DineProX.Entities.RoleManagement;
+using DineProX.Dtos.ResponseDtos;
+using DineProX.Dtos.UserManagement;
+using DineProX.Entities.Notification;
+using DineProX.Dtos.Notifications;
+using DineProX.Constants.RoleManagement;
+using DineProX.Permissions;
 
 namespace DineProX.AppServices.UserManagement
 {
     [Authorize]
-    public class UserManagementAppService : ApplicationService, UserManagementAppService
+    public class UserManagementAppService : ApplicationService, IUserManagementAppService
     {
         private readonly IdentityUserManager _userManager;
         private readonly IdentityRoleManager _roleManager;
@@ -68,7 +64,7 @@ namespace DineProX.AppServices.UserManagement
             _abpUserRoleRepository = abpUserRoleRepository;
         }
 
-        [Authorize(TISAPayrollManagementPermissions.User.User_Create)]
+        [Authorize(DineProXPermissions.User.User_Create)]
         public async Task<ResponseDto<UserDto>> CreateUserAsync(CreateUserDto input)
         {
             try
@@ -170,7 +166,7 @@ namespace DineProX.AppServices.UserManagement
                     $"Dear {fullName}, <br> You have been registered. Your credentials are email: {userName} and password: {password} <br> Login Url: <a href='{loginUrl}' style='color: blue;'>Link</a>";
 
                 MailMessage msg = new MailMessage();
-                msg.Subject = "TISA PayrollManagement";
+                msg.Subject = "DineProX Restro Management";
                 msg.Body = body;
                 msg.To.Add(email);
                 msg.IsBodyHtml = true;
@@ -223,7 +219,7 @@ namespace DineProX.AppServices.UserManagement
             }
         }
 
-        [Authorize(TISAPayrollManagementPermissions.User.User_Edit)]
+        [Authorize(DineProXPermissions.User.User_Edit)]
         public async Task<ResponseDto<UserDto>> UpdateUserAsync(Guid id, UpdateUserDto input)
         {
             try
@@ -314,7 +310,7 @@ namespace DineProX.AppServices.UserManagement
             }
         }
 
-        [Authorize(TISAPayrollManagementPermissions.User.User_Deactivate)]
+        [Authorize(DineProXPermissions.User.User_Deactivate)]
         public async Task<DeleteResponseDto> ActivateDeactivateUserAsync(ActivateDeactivateUserDto input)
         {
             try
@@ -484,7 +480,7 @@ namespace DineProX.AppServices.UserManagement
             }
         }
 
-        [Authorize(TISAPayrollManagementPermissions.User.Default)]
+        [Authorize(DineProXPermissions.User.Default)]
         public async Task<UserDto> GetUserByIdAsync(Guid id)
         {
             try
