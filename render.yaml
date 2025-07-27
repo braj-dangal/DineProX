@@ -12,7 +12,7 @@ services:
       - key: ASPNETCORE_URLS
         value: http://+:80
       - key: ConnectionStrings__Default
-        value: ${DATABASE_URL}
+        value: Host=dpg-d235772dbo4c73fs91i0-a;Port=5432;Database=dineproxdb;Username=dineproxdb_user;Password=9oouJzige0ytL5woVP65oiF1SVMrWp9h
       - key: Redis__Configuration
         fromService:
           type: redis
