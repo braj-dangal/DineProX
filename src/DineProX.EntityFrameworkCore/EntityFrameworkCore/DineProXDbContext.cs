@@ -1,4 +1,5 @@
 using DineProX.Entities.CustomerManagement;
+using DineProX.Entities.ExpenseManagement;
 using DineProX.Entities.InventoryManagement;
 using DineProX.Entities.MenuManagement;
 using DineProX.Entities.Notification;
@@ -63,7 +64,7 @@ public class DineProXDbContext :
     #endregion
 
    
-    //Role,Notification,Customer,Payment,Inventory,Order,Menu
+    //Role,Notification,Customer,Payment,Inventory,Order,Menu,Expense
     public DbSet<RoleExtension> RoleExtensions { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Customer> Customers { get; set; }
@@ -74,6 +75,7 @@ public class DineProXDbContext :
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<Dish> Dishes { get; set; }
+    public DbSet<Expense> Expenses { get; set; }
     public DineProXDbContext(DbContextOptions<DineProXDbContext> options)
         : base(options)
     {
@@ -185,6 +187,16 @@ public class DineProXDbContext :
             b.Property(x => x.Description).HasMaxLength(500).IsRequired(false);
             b.Property(x => x.Price).HasPrecision(18, 2).IsRequired();
             b.Property(x => x.IsAvailable).IsRequired();
+        });
+
+        builder.Entity<Expense>(b =>
+        {
+            b.ToTable("Expenses");
+            b.ConfigureByConvention();
+            b.Property(x => x.Description).HasMaxLength(256).IsRequired();
+            b.Property(x => x.Amount).HasPrecision(18, 2).IsRequired();
+            b.Property(x => x.ExpenseDate).IsRequired();
+            b.Property(x => x.Category).HasMaxLength(50).IsRequired();
         });
 
         /* Include modules to your migration db context */
