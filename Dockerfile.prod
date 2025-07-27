@@ -31,8 +31,16 @@ COPY ["src/DineProX.HttpApi/DineProX.HttpApi.csproj", "src/DineProX.HttpApi/"]
 COPY ["src/DineProX.HttpApi.Client/DineProX.HttpApi.Client.csproj", "src/DineProX.HttpApi.Client/"]
 COPY ["src/DineProX.DbMigrator/DineProX.DbMigrator.csproj", "src/DineProX.DbMigrator/"]
 
-# Restore dependencies
-RUN dotnet restore "DineProX.sln" --verbosity quiet
+# Restore dependencies for production projects only
+RUN dotnet restore "src/DineProX.HttpApi.Host/DineProX.HttpApi.Host.csproj" --verbosity quiet && \
+    dotnet restore "src/DineProX.Application/DineProX.Application.csproj" --verbosity quiet && \
+    dotnet restore "src/DineProX.Application.Contracts/DineProX.Application.Contracts.csproj" --verbosity quiet && \
+    dotnet restore "src/DineProX.Domain/DineProX.Domain.csproj" --verbosity quiet && \
+    dotnet restore "src/DineProX.Domain.Shared/DineProX.Domain.Shared.csproj" --verbosity quiet && \
+    dotnet restore "src/DineProX.EntityFrameworkCore/DineProX.EntityFrameworkCore.csproj" --verbosity quiet && \
+    dotnet restore "src/DineProX.HttpApi/DineProX.HttpApi.csproj" --verbosity quiet && \
+    dotnet restore "src/DineProX.HttpApi.Client/DineProX.HttpApi.Client.csproj" --verbosity quiet && \
+    dotnet restore "src/DineProX.DbMigrator/DineProX.DbMigrator.csproj" --verbosity quiet
 
 # Copy source code
 COPY . .
