@@ -1,6 +1,8 @@
 using DineProX.Entities.CustomerManagement;
 using DineProX.Entities.InventoryManagement;
+using DineProX.Entities.MenuManagement;
 using DineProX.Entities.Notification;
+using DineProX.Entities.OrderManagement;
 using DineProX.Entities.PaymentManagement;
 using DineProX.Entities.RoleManagement;
 ﻿using Microsoft.EntityFrameworkCore;
@@ -61,7 +63,7 @@ public class DineProXDbContext :
     #endregion
 
    
-    //Role,Notification,Customer,Payment,Inventory
+    //Role,Notification,Customer,Payment,Inventory,Order,Menu
     public DbSet<RoleExtension> RoleExtensions { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Customer> Customers { get; set; }
@@ -69,6 +71,9 @@ public class DineProXDbContext :
     public DbSet<Due> Dues { get; set; }
     public DbSet<Purchase> Purchases { get; set; }
     public DbSet<Inventory> Inventories { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<Dish> Dishes { get; set; }
     public DineProXDbContext(DbContextOptions<DineProXDbContext> options)
         : base(options)
     {
@@ -149,6 +154,37 @@ public class DineProXDbContext :
             b.ConfigureByConvention();
             b.Property(x => x.DishId).IsRequired();
             b.Property(x => x.QuantityAvailable).IsRequired();
+        });
+
+        builder.Entity<Order>(b =>
+        {
+            b.ToTable("Orders");
+            b.ConfigureByConvention();
+            b.Property(x => x.CustomerId).IsRequired();
+            b.Property(x => x.TotalAmount).HasPrecision(18, 2).IsRequired();
+            b.Property(x => x.Discount).HasPrecision(18, 2).IsRequired();
+            b.Property(x => x.OrderDate).IsRequired();
+            b.Property(x => x.Status).IsRequired();
+        });
+
+        builder.Entity<OrderItem>(b =>
+        {
+            b.ToTable("OrderItems");
+            b.ConfigureByConvention();
+            b.Property(x => x.OrderId).IsRequired();
+            b.Property(x => x.DishId).IsRequired();
+            b.Property(x => x.Quantity).IsRequired();
+            b.Property(x => x.UnitPrice).HasPrecision(18, 2).IsRequired();
+        });
+
+        builder.Entity<Dish>(b =>
+        {
+            b.ToTable("Dishes");
+            b.ConfigureByConvention();
+            b.Property(x => x.Name).HasMaxLength(100).IsRequired();
+            b.Property(x => x.Description).HasMaxLength(500).IsRequired(false);
+            b.Property(x => x.Price).HasPrecision(18, 2).IsRequired();
+            b.Property(x => x.IsAvailable).IsRequired();
         });
 
         /* Include modules to your migration db context */

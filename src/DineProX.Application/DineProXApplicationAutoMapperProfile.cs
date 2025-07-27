@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
 using DineProX.Dtos.CustomerManagement;
 using DineProX.Dtos.InventoryManagement;
+using DineProX.Dtos.MenuManagement;
+using DineProX.Dtos.OrderManagement;
 using DineProX.Dtos.PaymentManagement;
 using DineProX.Entities.CustomerManagement;
 using DineProX.Entities.InventoryManagement;
+using DineProX.Entities.MenuManagement;
+using DineProX.Entities.OrderManagement;
 using DineProX.Entities.PaymentManagement;
 
 namespace DineProX;
@@ -31,5 +35,12 @@ public class DineProXApplicationAutoMapperProfile : Profile
         CreateMap<CreatePurchaseDto, Purchase>();
         CreateMap<Inventory, InventoryDto>();
         CreateMap<UpdateInventoryDto, Inventory>();
+
+        // Order mappings
+        CreateMap<Order, OrderDto>();
+        CreateMap<CreateOrderDto, Order>();
+        CreateMap<OrderItem, OrderItemDto>();
+        CreateMap<CreateOrderItemDto, OrderItem>();
+        CreateMap<Dish, DishDto>();
     }
 }
