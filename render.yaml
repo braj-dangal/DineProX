@@ -1,0 +1,33 @@
+databases:
+  - name: dineprox-postgres
+    databaseName: dineprox
+    user: dineprox_user
+    plan: free
+
+services:
+  - type: web
+    name: dineprox-api
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile.prod
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ASPNETCORE_URLS
+        value: http://+:80
+      - key: ConnectionStrings__Default
+        fromDatabase:
+          name: dineprox-postgres
+          property: connectionString
+      - key: Redis__Configuration
+        fromService:
+          type: redis
+          name: dineprox-redis
+          property: connectionString
+
+  - type: redis
+    name: dineprox-redis
+    plan: free
+    maxmemoryPolicy: allkeys-lru 

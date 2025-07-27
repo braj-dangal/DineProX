@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # DineProX Application for Render
+  dineprox-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - "10000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      # Connection string will be provided by Render environment variables
+      - ConnectionStrings__Default=${DATABASE_URL}
+      - Redis__Configuration=${REDIS_URL}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+        reservations:
+          memory: 512M
+          cpus: '0.25' 
