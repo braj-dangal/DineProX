@@ -5,6 +5,7 @@ using DineProX.Dtos.InventoryManagement;
 using DineProX.Dtos.MenuManagement;
 using DineProX.Dtos.OrderManagement;
 using DineProX.Dtos.PaymentManagement;
+using DineProX.Dtos.ReportManagement;
 using DineProX.Entities.CustomerManagement;
 using DineProX.Entities.ExpenseManagement;
 using DineProX.Entities.InventoryManagement;
@@ -48,5 +49,8 @@ public class DineProXApplicationAutoMapperProfile : Profile
         // Expense mappings
         CreateMap<Expense, ExpenseDto>();
         CreateMap<CreateUpdateExpenseDto, Expense>();
+
+        // Report mappings (read-only DTOs, no entity mapping needed)
+        // These DTOs are populated manually in the ReportAppService
     }
 }
