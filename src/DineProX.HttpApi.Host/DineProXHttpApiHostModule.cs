@@ -95,7 +95,7 @@ public class DineProXHttpApiHostModule : AbpModule
         });
 
         // Disable libs check for API-only applications
-        Configure<AbpMvcLibsOptions>(options =>
+        Configure<AbpAspNetCoreMvcOptions>(options =>
         {
             options.CheckLibs = false;
         });
