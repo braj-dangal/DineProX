@@ -1,5 +1,5 @@
 # Production-optimized multi-stage build for DineProX ABP Framework application
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS base
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS base
 WORKDIR /app
 
 # Install curl for health checks
@@ -13,7 +13,7 @@ EXPOSE 80
 EXPOSE 443
 
 # Build stage
-FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 WORKDIR /src
 
 # Install necessary build tools
