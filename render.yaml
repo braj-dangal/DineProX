@@ -11,8 +11,8 @@ services:
         value: Production
       - key: ASPNETCORE_URLS
         value: http://+:80
-                   - key: ConnectionStrings__Default
-               value: ${DATABASE_URL}
+      - key: ConnectionStrings__Default
+        value: ${DATABASE_URL}
       - key: Redis__Configuration
         fromService:
           type: redis
