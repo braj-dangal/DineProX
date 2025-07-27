@@ -22,5 +22,6 @@ public class DineProXApplicationAutoMapperProfile : Profile
         CreateMap<Payment, PaymentDto>();
         CreateMap<CreateUpdatePaymentDto, Payment>();
         CreateMap<Due, DueDto>();
+        CreateMap<SettleDueDto, Due>();
     }
 }

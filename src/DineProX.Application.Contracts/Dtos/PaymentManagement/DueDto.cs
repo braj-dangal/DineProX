@@ -1,10 +1,10 @@
 using System;
+using Volo.Abp.Application.Dtos;
 
 namespace DineProX.Dtos.PaymentManagement
 {
-    public class DueDto
+    public class DueDto : AuditedEntityDto<Guid>
     {
-        public Guid Id { get; set; }
         public Guid PaymentId { get; set; }
         public Guid CustomerId { get; set; }
         public decimal TotalAmount { get; set; }
@@ -12,9 +12,5 @@ namespace DineProX.Dtos.PaymentManagement
         public decimal RemainingDue { get; set; }
         public DateTime DueDate { get; set; }
         public bool IsSettled { get; set; }
-        
-        // Only if needed
-        public DateTime CreationTime { get; set; }
-        public Guid? CreatorId { get; set; }
     }
 } 
