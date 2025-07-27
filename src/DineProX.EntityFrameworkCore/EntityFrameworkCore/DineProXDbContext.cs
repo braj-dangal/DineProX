@@ -1,3 +1,4 @@
+using DineProX.Entities.Notification;
 using DineProX.Entities.RoleManagement;
 ﻿using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -5,6 +6,7 @@ using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
+using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
@@ -55,7 +57,7 @@ public class DineProXDbContext :
 
     #endregion
 
-   #region Non Abp Entities
+   
     //Role,Notificatio
     public DbSet<RoleExtension> RoleExtensions { get; set; }
     public DbSet<Notification> Notifications { get; set; }
