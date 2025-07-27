@@ -1,5 +1,6 @@
 using DineProX.Entities.CustomerManagement;
 using DineProX.Entities.Notification;
+using DineProX.Entities.PaymentManagement;
 using DineProX.Entities.RoleManagement;
 ﻿using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -59,10 +60,12 @@ public class DineProXDbContext :
     #endregion
 
    
-    //Role,Notification,Customer
+    //Role,Notification,Customer,Payment
     public DbSet<RoleExtension> RoleExtensions { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Customer> Customers { get; set; }
+    public DbSet<Payment> Payments { get; set; }
+    public DbSet<Due> Dues { get; set; }
     public DineProXDbContext(DbContextOptions<DineProXDbContext> options)
         : base(options)
     {
@@ -99,6 +102,31 @@ public class DineProXDbContext :
             b.Property(x => x.PhoneNumber).HasMaxLength(20).IsRequired();
             b.Property(x => x.Address).HasMaxLength(500).IsRequired();
             b.Property(x => x.UserId).IsRequired(false);
+        });
+
+        builder.Entity<Payment>(b =>
+        {
+            b.ToTable("Payments");
+            b.ConfigureByConvention();
+            b.Property(x => x.OrderId).IsRequired();
+            b.Property(x => x.CustomerId).IsRequired();
+            b.Property(x => x.AmountPaid).HasPrecision(18, 2).IsRequired();
+            b.Property(x => x.Discount).HasPrecision(18, 2).IsRequired();
+            b.Property(x => x.TotalBill).HasPrecision(18, 2).IsRequired();
+            b.Property(x => x.Date).IsRequired();
+        });
+
+        builder.Entity<Due>(b =>
+        {
+            b.ToTable("Dues");
+            b.ConfigureByConvention();
+            b.Property(x => x.PaymentId).IsRequired();
+            b.Property(x => x.CustomerId).IsRequired();
+            b.Property(x => x.TotalAmount).HasPrecision(18, 2).IsRequired();
+            b.Property(x => x.AmountPaid).HasPrecision(18, 2).IsRequired();
+            b.Property(x => x.RemainingDue).HasPrecision(18, 2).IsRequired();
+            b.Property(x => x.DueDate).IsRequired();
+            b.Property(x => x.IsSettled).IsRequired();
         });
 
         /* Include modules to your migration db context */
