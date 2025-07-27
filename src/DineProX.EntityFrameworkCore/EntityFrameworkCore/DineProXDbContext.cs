@@ -1,3 +1,4 @@
+using DineProX.Entities.CustomerManagement;
 using DineProX.Entities.Notification;
 using DineProX.Entities.RoleManagement;
 ﻿using Microsoft.EntityFrameworkCore;
@@ -58,9 +59,10 @@ public class DineProXDbContext :
     #endregion
 
    
-    //Role,Notificatio
+    //Role,Notification,Customer
     public DbSet<RoleExtension> RoleExtensions { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<Customer> Customers { get; set; }
     public DineProXDbContext(DbContextOptions<DineProXDbContext> options)
         : base(options)
     {
@@ -87,6 +89,16 @@ public class DineProXDbContext :
             b.Property(x => x.AbpRoleName).HasMaxLength(50).IsRequired();
             b.Property(x => x.Description).HasMaxLength(500).IsRequired(false);
             b.Property(x => x.IsActive).IsRequired(false);
+        });
+
+        builder.Entity<Customer>(b =>
+        {
+            b.ToTable("Customers");
+            b.ConfigureByConvention();
+            b.Property(x => x.Name).HasMaxLength(100).IsRequired();
+            b.Property(x => x.PhoneNumber).HasMaxLength(20).IsRequired();
+            b.Property(x => x.Address).HasMaxLength(500).IsRequired();
+            b.Property(x => x.UserId).IsRequired(false);
         });
 
         /* Include modules to your migration db context */
