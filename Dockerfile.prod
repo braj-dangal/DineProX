@@ -2,8 +2,8 @@
 FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS base
 WORKDIR /app
 
-# Install curl for health checks
-RUN apk add --no-cache curl
+# Install curl for health checks and ICU for globalization
+RUN apk add --no-cache curl icu-libs
 
 # Create non-root user
 RUN addgroup -g 1001 -S appgroup && \
