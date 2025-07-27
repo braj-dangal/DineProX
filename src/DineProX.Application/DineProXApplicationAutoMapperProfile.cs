@@ -30,5 +30,6 @@ public class DineProXApplicationAutoMapperProfile : Profile
         CreateMap<Purchase, PurchaseDto>();
         CreateMap<CreatePurchaseDto, Purchase>();
         CreateMap<Inventory, InventoryDto>();
+        CreateMap<UpdateInventoryDto, Inventory>();
     }
 }
