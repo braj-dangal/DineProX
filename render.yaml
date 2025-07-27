@@ -30,4 +30,5 @@ services:
   - type: redis
     name: dineprox-redis
     plan: free
-    maxmemoryPolicy: allkeys-lru 
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: [] 
