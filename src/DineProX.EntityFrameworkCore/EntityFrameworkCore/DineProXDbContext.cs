@@ -1,5 +1,6 @@
 using DineProX.Entities.Notification;
 using DineProX.Entities.RoleManagement;
+using DineProX.Entities.MasterData;
 ﻿using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
@@ -58,9 +59,19 @@ public class DineProXDbContext :
     #endregion
 
    
-    //Role,Notificatio
+    //Role, Notification
     public DbSet<RoleExtension> RoleExtensions { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+
+    //Master Data
+    public DbSet<ItemCategory> ItemCategories { get; set; }
+    public DbSet<MenuItem> MenuItems { get; set; }
+    public DbSet<Table> Tables { get; set; }
+    public DbSet<TableZone> TableZones { get; set; }
+    public DbSet<Supplier> Suppliers { get; set; }
+    public DbSet<TaxRate> TaxRates { get; set; }
+    public DbSet<PaymentMethod> PaymentMethods { get; set; }
+    public DbSet<Shift> Shifts { get; set; }
     public DineProXDbContext(DbContextOptions<DineProXDbContext> options)
         : base(options)
     {
@@ -87,6 +98,99 @@ public class DineProXDbContext :
             b.Property(x => x.AbpRoleName).HasMaxLength(50).IsRequired();
             b.Property(x => x.Description).HasMaxLength(500).IsRequired(false);
             b.Property(x => x.IsActive).IsRequired(false);
+        });
+
+        /* Master Data Entity Configurations */
+        builder.Entity<ItemCategory>(b =>
+        {
+            b.ToTable("MasterData_ItemCategories");
+            b.ConfigureByConvention();
+            b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+            b.Property(x => x.Description).HasMaxLength(500);
+            b.Property(x => x.DisplayOrder).IsRequired();
+            b.Property(x => x.IsActive).IsRequired();
+        });
+
+        builder.Entity<MenuItem>(b =>
+        {
+            b.ToTable("MasterData_MenuItems");
+            b.ConfigureByConvention();
+            b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+            b.Property(x => x.StockUnit).IsRequired().HasMaxLength(50);
+            b.Property(x => x.Price).HasPrecision(18, 2);
+            b.Property(x => x.TaxPercentage).HasPrecision(5, 2);
+            b.Property(x => x.Description).HasMaxLength(500);
+            b.Property(x => x.Allergens).HasMaxLength(500);
+            b.Property(x => x.IsActive).IsRequired();
+            b.HasOne<ItemCategory>().WithMany().HasForeignKey(x => x.CategoryId).IsRequired();
+        });
+
+        builder.Entity<Table>(b =>
+        {
+            b.ToTable("MasterData_Tables");
+            b.ConfigureByConvention();
+            b.Property(x => x.TableNumber).IsRequired().HasMaxLength(50);
+            b.Property(x => x.Capacity).IsRequired();
+            b.Property(x => x.Status).IsRequired();
+            b.Property(x => x.IsActive).IsRequired();
+            b.HasOne<TableZone>().WithMany().HasForeignKey(x => x.ZoneId).IsRequired(false);
+        });
+
+        builder.Entity<TableZone>(b =>
+        {
+            b.ToTable("MasterData_TableZones");
+            b.ConfigureByConvention();
+            b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+            b.Property(x => x.Description).HasMaxLength(500);
+            b.Property(x => x.IsActive).IsRequired();
+        });
+
+        builder.Entity<Supplier>(b =>
+        {
+            b.ToTable("MasterData_Suppliers");
+            b.ConfigureByConvention();
+            b.Property(x => x.Name).IsRequired().HasMaxLength(256);
+            b.Property(x => x.ContactPerson).HasMaxLength(128);
+            b.Property(x => x.Email).HasMaxLength(256);
+            b.Property(x => x.Phone).HasMaxLength(20);
+            b.Property(x => x.Address).HasMaxLength(500);
+            b.Property(x => x.City).HasMaxLength(128);
+            b.Property(x => x.PostalCode).HasMaxLength(20);
+            b.Property(x => x.Country).HasMaxLength(128);
+            b.Property(x => x.PaymentTerms).HasMaxLength(256);
+            b.Property(x => x.CreditLimit).HasPrecision(18, 2);
+            b.Property(x => x.IsActive).IsRequired();
+        });
+
+        builder.Entity<TaxRate>(b =>
+        {
+            b.ToTable("MasterData_TaxRates");
+            b.ConfigureByConvention();
+            b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+            b.Property(x => x.Rate).HasPrecision(5, 2);
+            b.Property(x => x.Description).HasMaxLength(500);
+            b.Property(x => x.IsActive).IsRequired();
+        });
+
+        builder.Entity<PaymentMethod>(b =>
+        {
+            b.ToTable("MasterData_PaymentMethods");
+            b.ConfigureByConvention();
+            b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+            b.Property(x => x.Type).IsRequired();
+            b.Property(x => x.Description).HasMaxLength(500);
+            b.Property(x => x.IsActive).IsRequired();
+        });
+
+        builder.Entity<Shift>(b =>
+        {
+            b.ToTable("MasterData_Shifts");
+            b.ConfigureByConvention();
+            b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+            b.Property(x => x.StartTime).IsRequired();
+            b.Property(x => x.EndTime).IsRequired();
+            b.Property(x => x.Description).HasMaxLength(500);
+            b.Property(x => x.IsActive).IsRequired();
         });
 
         /* Include modules to your migration db context */
