@@ -8,11 +8,12 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using DineProX.Entities.MasterData;
 using DineProX.Dtos.MasterData;
+using DineProX.Interfaces.MasterData.TaxRate;
 
 namespace DineProX.AppServices.MasterData
 {
     [Authorize]
-    public class TaxRateAppService : ApplicationService
+    public class TaxRateAppService : ApplicationService, ITaxRateAppService
     {
         private readonly IRepository<TaxRate, Guid> _repository;
 

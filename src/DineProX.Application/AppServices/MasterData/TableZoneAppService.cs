@@ -8,11 +8,12 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using DineProX.Entities.MasterData;
 using DineProX.Dtos.MasterData;
+using DineProX.Interfaces.MasterData.TableZone;
 
 namespace DineProX.AppServices.MasterData
 {
     [Authorize]
-    public class TableZoneAppService : ApplicationService
+    public class TableZoneAppService : ApplicationService, ITableZoneAppService
     {
         private readonly IRepository<TableZone, Guid> _repository;
 

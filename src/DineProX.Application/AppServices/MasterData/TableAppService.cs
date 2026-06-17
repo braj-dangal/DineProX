@@ -8,11 +8,12 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using DineProX.Entities.MasterData;
 using DineProX.Dtos.MasterData;
+using DineProX.Interfaces.MasterData.Table;
 
 namespace DineProX.AppServices.MasterData
 {
     [Authorize]
-    public class TableAppService : ApplicationService
+    public class TableAppService : ApplicationService, ITableAppService
     {
         private readonly IRepository<Table, Guid> _repository;
 
@@ -82,7 +83,7 @@ namespace DineProX.AppServices.MasterData
             await _repository.UpdateAsync(entity);
         }
 
-        public async Task MarkAsFreAsync(Guid id)
+        public async Task MarkAsFreeAsync(Guid id)
         {
             var entity = await _repository.GetAsync(id);
             entity.MarkAsFree();

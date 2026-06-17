@@ -8,11 +8,12 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using DineProX.Entities.MasterData;
 using DineProX.Dtos.MasterData;
+using DineProX.Interfaces.MasterData.Shift;
 
 namespace DineProX.AppServices.MasterData
 {
     [Authorize]
-    public class ShiftAppService : ApplicationService
+    public class ShiftAppService : ApplicationService, IShiftAppService
     {
         private readonly IRepository<Shift, Guid> _repository;
 

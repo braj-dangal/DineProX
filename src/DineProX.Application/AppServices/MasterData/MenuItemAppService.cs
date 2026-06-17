@@ -8,11 +8,12 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using DineProX.Entities.MasterData;
 using DineProX.Dtos.MasterData;
+using DineProX.Interfaces.MasterData.MenuItem;
 
 namespace DineProX.AppServices.MasterData
 {
     [Authorize]
-    public class MenuItemAppService : ApplicationService
+    public class MenuItemAppService : ApplicationService, IMenuItemAppService
     {
         private readonly IRepository<MenuItem, Guid> _repository;
 

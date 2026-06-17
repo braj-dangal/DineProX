@@ -8,11 +8,12 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using DineProX.Entities.MasterData;
 using DineProX.Dtos.MasterData;
+using DineProX.Interfaces.MasterData.PaymentMethod;
 
 namespace DineProX.AppServices.MasterData
 {
     [Authorize]
-    public class PaymentMethodAppService : ApplicationService
+    public class PaymentMethodAppService : ApplicationService, IPaymentMethodAppService
     {
         private readonly IRepository<PaymentMethod, Guid> _repository;
 

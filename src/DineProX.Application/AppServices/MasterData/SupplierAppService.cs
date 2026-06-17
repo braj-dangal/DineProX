@@ -8,11 +8,12 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using DineProX.Entities.MasterData;
 using DineProX.Dtos.MasterData;
+using DineProX.Interfaces.MasterData.Supplier;
 
 namespace DineProX.AppServices.MasterData
 {
     [Authorize]
-    public class SupplierAppService : ApplicationService
+    public class SupplierAppService : ApplicationService, ISupplierAppService
     {
         private readonly IRepository<Supplier, Guid> _repository;
 

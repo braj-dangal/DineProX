@@ -9,11 +9,12 @@ using Volo.Abp.Domain.Repositories;
 using AutoMapper;
 using DineProX.Entities.MasterData;
 using DineProX.Dtos.MasterData;
+using DineProX.Interfaces.MasterData.ItemCategory;
 
 namespace DineProX.AppServices.MasterData
 {
     [Authorize]
-    public class ItemCategoryAppService : ApplicationService
+    public class ItemCategoryAppService : ApplicationService, IItemCategoryAppService
     {
         private readonly IRepository<ItemCategory, Guid> _repository;
 
