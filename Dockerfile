@@ -12,7 +12,7 @@ COPY ["common.props", "."]
 COPY ["NuGet.Config", "."]
 COPY ["DineProX.sln", "."]
 
-RUN dotnet restore DineProX.sln
+RUN dotnet restore src/DineProX.HttpApi.Host/DineProX.HttpApi.Host.csproj
 
 COPY . .
 RUN dotnet publish src/DineProX.HttpApi.Host/DineProX.HttpApi.Host.csproj -c Release -o /app/publish /p:UseAppHost=false
