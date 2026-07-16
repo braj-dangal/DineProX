@@ -1,0 +1,52 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:16
+    container_name: dineprox-db
+    environment:
+      POSTGRES_DB: DineProX
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d DineProX"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  migrator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dineprox-migrator
+    command: ["dotnet", "DineProX.DbMigrator.dll"]
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__Default: Host=db;Port=5432;Database=DineProX;User ID=postgres;Password=postgres;
+    depends_on:
+      db:
+        condition: service_healthy
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dineprox-app
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__Default: Host=db;Port=5432;Database=DineProX;User ID=postgres;Password=postgres;
+      App__SelfUrl: http://YOUR_DOMAIN_OR_SERVER_IP:8080
+      App__CorsOrigins: http://YOUR_DOMAIN_OR_SERVER_IP:8080,http://localhost:4200
+      AuthServer__Authority: http://YOUR_DOMAIN_OR_SERVER_IP:8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      migrator:
+        condition: service_completed_successfully
+
+volumes:
+  pgdata:
