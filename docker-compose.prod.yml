@@ -35,7 +35,7 @@ services:
       App__RedirectAllowedUrls: ${APP_CORS_ORIGINS:-http://72.61.151.220:2222,http://localhost:4200}
       AuthServer__Authority: ${APP_SELF_URL:-http://72.61.151.220:2222}
     ports:
-      - "8080:8080"
+      - "2222:8080"
     depends_on:
       - migrator
     restart: unless-stopped
