@@ -1,0 +1,17 @@
+app:
+    build:
+      context: .
+      dockerfile: Dockerfile # Points directly to your root Dockerfile
+    container_name: dineprox-app
+    restart: unless-stopped
+    ports:
+      - "2220:8080" # Map host port 2220 to container port 8080 (configured in your Dockerfile)
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__Default: Host=db;Port=5432;Database=dineprox;Username=postgres;Password=postgres
+      App__SelfUrl: ${PUBLIC_URL:-http://72.61.151.220}
+      # ... rest of your environment variables ...
+    depends_on:
+      db:
+        condition: service_healthy
