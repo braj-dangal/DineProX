@@ -18,6 +18,7 @@ services:
       - AuthServer__Authority=http://72.61.151.220
       - App__CorsOrigins=http://72.61.151.220
       - App__RedirectAllowedUrls=http://72.61.151.220
+      - AuthServer__RequireHttpsMetadata=false
       
     depends_on:
       - db
