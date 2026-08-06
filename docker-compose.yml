@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dineprox_web
+    restart: always
+    ports:
+      - "80:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__Default=Host=db;Port=5432;Database=dineprox;Username=postgres;Password=postgres
+      - App__SelfUrl=http://72.61.151.220
+      - App__ClientUrl=http://72.61.151.220
+      - AuthServer__Authority=http://72.61.151.220
+      - App__CorsOrigins=http://72.61.151.220
+      - App__RedirectAllowedUrls=http://72.61.151.220
+      - AuthServer__RequireHttpsMetadata=false
+      
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16-alpine
+    container_name: dineprox_db
+    restart: always
+    environment:
+      POSTGRES_DB: dineprox
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
