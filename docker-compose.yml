@@ -13,11 +13,11 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8080
       - ConnectionStrings__Default=Host=db;Port=5432;Database=dineprox;Username=postgres;Password=postgres
-      - App__SelfUrl=http://72.61.151.220
-      - App__ClientUrl=http://72.61.151.220
-      - AuthServer__Authority=http://72.61.151.220
-      - App__CorsOrigins=http://72.61.151.220
-      - App__RedirectAllowedUrls=http://72.61.151.220
+      - App__SelfUrl=http://localhost
+      - App__ClientUrl=http://localhost:4200
+      - AuthServer__Authority=http://localhost
+      - App__CorsOrigins=http://localhost,http://localhost:4200
+      - App__RedirectAllowedUrls=http://localhost:4200
       - AuthServer__RequireHttpsMetadata=false
       
     depends_on:
