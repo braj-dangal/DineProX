@@ -122,6 +122,7 @@ public class OpenIddictDataSeedContributor : IDataSeedContributor, ITransientDep
                 grantTypes: new List<string> { OpenIddictConstants.GrantTypes.AuthorizationCode, },
                 scopes: commonScopes,
                 redirectUri: $"{swaggerRootUrl}/swagger/oauth2-redirect.html",
+                postLogoutRedirectUri: $"{swaggerRootUrl}/swagger/index.html",
                 clientUri: swaggerRootUrl
             );
         }
