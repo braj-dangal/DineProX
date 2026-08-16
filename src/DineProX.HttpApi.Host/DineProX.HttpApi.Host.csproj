@@ -41,8 +41,4 @@
     <None Remove="Logs\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="Dockerfile" />
-  </ItemGroup>
-
 </Project>
