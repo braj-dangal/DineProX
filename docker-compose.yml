@@ -8,17 +8,21 @@ services:
     container_name: dineprox_web
     restart: always
     ports:
-      - "80:8080"
+      - "443:8443"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_URLS=https://+:8443
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
       - ConnectionStrings__Default=Host=db;Port=5432;Database=dineprox;Username=postgres;Password=postgres
-      - App__SelfUrl=http://72.61.151.220
-      - App__ClientUrl=http://72.61.151.220
-      - AuthServer__Authority=http://72.61.151.220
-      - App__CorsOrigins=http://72.61.151.220
-      - App__RedirectAllowedUrls=http://72.61.151.220
-      - AuthServer__RequireHttpsMetadata=false
+      - App__SelfUrl=https://72.61.151.220
+      - App__ClientUrl=https://72.61.151.220
+      - AuthServer__Authority=https://72.61.151.220
+      - App__CorsOrigins=https://72.61.151.220
+      - App__RedirectAllowedUrls=https://72.61.151.220
+      - AuthServer__RequireHttpsMetadata=true
+    volumes:
+      - ./certs:/https
     depends_on:
       - db
 
