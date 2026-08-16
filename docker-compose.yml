@@ -36,7 +36,7 @@ services:
     ports:
       - "8080:80"  # Exposes container port 80 directly to public VPS port 8080
     environment:
-      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_ENVIRONMENT: "Development"
       ConnectionStrings__Default: "Host=db;Port=5432;Database=DineProXDb;Username=postgres;Password=YourStrongPassword123!"
       App__SelfUrl: "http://72.61.151.220:8080"
       AuthServer__Authority: "http://72.61.151.220:8080"
