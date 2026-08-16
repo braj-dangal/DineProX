@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # 1. PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    container_name: dineprox-db
+    restart: always
+    environment:
+      POSTGRES_DB: DineProXDb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: YourStrongPassword123!
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # 2. Database Migrator
+  migrator:
+    build:
+      context: .
+      dockerfile: src/DineProX.DbMigrator/Dockerfile
+    container_name: dineprox-migrator
+    environment:
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=DineProXDb;Username=postgres;Password=YourStrongPassword123!"
+    depends_on:
+      - db
+
+  # 3. ABP HttpApi.Host WebAPI
+  api:
+    build:
+      context: .
+      dockerfile: src/DineProX.HttpApi.Host/Dockerfile
+    container_name: dineprox-api
+    restart: always
+    ports:
+      - "8080:80"  # Exposes container port 80 directly to public VPS port 8080
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=DineProXDb;Username=postgres;Password=YourStrongPassword123!"
+      App__SelfUrl: "http://72.61.151.220:8080"
+      AuthServer__Authority: "http://72.61.151.220:8080"
+      AuthServer__RequireHttpsMetadata: "false"
+      # CORS configuration allowing local React development later
+      App__CorsOrigins: "http://localhost:3000,http://72.61.151.220:8080"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
