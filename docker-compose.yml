@@ -16,15 +16,15 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   # 2. Database Migrator
-  migrator:
-    build:
-      context: .
-      dockerfile: src/DineProX.DbMigrator/Dockerfile
-    container_name: dineprox-migrator
-    environment:
-      ConnectionStrings__Default: "Host=db;Port=5432;Database=DineProXDb;Username=postgres;Password=YourStrongPassword123!"
-    depends_on:
-      - db
+  # migrator:
+  #   build:
+  #     context: .
+  #     dockerfile: src/DineProX.DbMigrator/Dockerfile
+  #   container_name: dineprox-migrator
+  #   environment:
+  #     ConnectionStrings__Default: "Host=db;Port=5432;Database=DineProXDb;Username=postgres;Password=YourStrongPassword123!"
+  #   depends_on:
+  #     - db
 
   # 3. ABP HttpApi.Host WebAPI
   api:
