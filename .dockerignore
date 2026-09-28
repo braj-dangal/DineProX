@@ -1,0 +1,12 @@
+**/bin/
+**/obj/
+.git/
+.vs/
+.env
+.env.*
+secrets/
+certs/
+Logs/
+publish_test/
+test/**/bin/
+test/**/obj/

@@ -1,0 +1,105 @@
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-DineProXDb}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - database
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  migrator:
+    image: dineprox:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: ["dotnet", "/app/migrator/DineProX.DbMigrator.dll"]
+    restart: "no"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=${POSTGRES_DB:-DineProXDb};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}"
+      StringEncryption__DefaultPassPhrase: ${STRING_ENCRYPTION_PASSPHRASE:?Set STRING_ENCRYPTION_PASSPHRASE in .env}
+      OpenIddict__Applications__DineProX_App__RootUrl: "https://${DOMAIN:?Set DOMAIN in .env}"
+      OpenIddict__Applications__DineProX_Swagger__RootUrl: "https://${DOMAIN:?Set DOMAIN in .env}"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - migrator_logs:/app/migrator/Logs
+    networks:
+      - database
+
+  app:
+    image: dineprox:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=${POSTGRES_DB:-DineProXDb};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}"
+      App__SelfUrl: "https://${DOMAIN:?Set DOMAIN in .env}"
+      App__ClientUrl: "https://${DOMAIN:?Set DOMAIN in .env}"
+      App__CorsOrigins: "https://${DOMAIN:?Set DOMAIN in .env}"
+      App__RedirectAllowedUrls: "https://${DOMAIN:?Set DOMAIN in .env}"
+      AuthServer__Authority: "https://${DOMAIN:?Set DOMAIN in .env}"
+      AuthServer__RequireHttpsMetadata: "true"
+      AuthServer__SwaggerClientId: DineProX_Swagger
+      OpenIddict__Certificates__Path: /run/secrets/openiddict.pfx
+      OpenIddict__Certificates__Password: ${OPENIDDICT_CERT_PASSWORD:?Set OPENIDDICT_CERT_PASSWORD in .env}
+      StringEncryption__DefaultPassPhrase: ${STRING_ENCRYPTION_PASSPHRASE:?Set STRING_ENCRYPTION_PASSPHRASE in .env}
+    depends_on:
+      db:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+    secrets:
+      - openiddict.pfx
+    volumes:
+      - host_logs:/app/host/Logs
+    networks:
+      - database
+      - web
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN in .env}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+    networks:
+      - web
+
+volumes:
+  postgres_data:
+  host_logs:
+  migrator_logs:
+  caddy_data:
+  caddy_config:
+
+networks:
+  database:
+    internal: true
+  web:
+
+secrets:
+  openiddict.pfx:
+    file: ./secrets/openiddict.pfx

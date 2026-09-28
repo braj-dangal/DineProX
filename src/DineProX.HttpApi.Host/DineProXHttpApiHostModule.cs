@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using OpenIddict.Validation.AspNetCore;
+using OpenIddict.Server;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -48,6 +49,20 @@ public class DineProXHttpApiHostModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {
+        var configuration = context.Services.GetConfiguration();
+        var certificatePath = configuration["OpenIddict:Certificates:Path"];
+        var certificatePassword = configuration["OpenIddict:Certificates:Password"];
+
+        if (!string.IsNullOrWhiteSpace(certificatePath) && !string.IsNullOrWhiteSpace(certificatePassword))
+        {
+            PreConfigure<OpenIddictServerBuilder>(builder =>
+                builder.AddProductionEncryptionAndSigningCertificate(certificatePath, certificatePassword));
+        }
+        else if (context.Services.GetHostingEnvironment().IsProduction())
+        {
+            throw new InvalidOperationException("OpenIddict production certificate path and password must be configured.");
+        }
+
         PreConfigure<OpenIddictBuilder>(builder =>
         {
             builder.AddValidation(options =>

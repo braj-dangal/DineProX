@@ -61,6 +61,47 @@ This is a layered monolith application that consists of the following applicatio
 
 Deploying an ABP application is not different than deploying any .NET or ASP.NET Core application. However, there are some topics that you should care about when you are deploying your applications. You can check ABP's [Deployment documentation](https://abp.io/docs/latest/deployment) before deploying your application.
 
+#### Docker on a Hostinger VPS
+
+The repository includes a Docker Compose deployment for the ASP.NET host, PostgreSQL, the database migrator, and Caddy HTTPS for `syronxtech.com.np`. The Angular client is not present in this repository, so this stack deploys the API and the built-in ABP MVC/Swagger UI only.
+
+Before deployment, point the domain's DNS `A` record to the VPS public IP. Remove or correct any `AAAA` record if the VPS does not have working IPv6. Allow inbound TCP ports 80 and 443 in the Hostinger firewall (and the VPS firewall); SSH should be limited to your administrative IP. Install Docker Engine and the Docker Compose plugin on the VPS, then clone this repository there.
+
+From the repository root on the VPS:
+
+```bash
+cp .env.example .env
+openssl rand -hex 32
+```
+
+Generate separate random values for `POSTGRES_PASSWORD`, `OPENIDDICT_CERT_PASSWORD`, and `STRING_ENCRYPTION_PASSPHRASE` in `.env`. Do not commit `.env` or put these values in source control. Create the OpenIddict signing/encryption certificate; OpenSSL prompts for the PFX password, which must match `OPENIDDICT_CERT_PASSWORD` in `.env`:
+
+```bash
+mkdir -p secrets
+openssl req -x509 -newkey rsa:3072 -keyout secrets/openiddict.key -out secrets/openiddict.crt -sha256 -days 3650 -nodes -subj "/CN=syronxtech.com.np"
+openssl pkcs12 -export -out secrets/openiddict.pfx -inkey secrets/openiddict.key -in secrets/openiddict.crt -name DineProX
+chmod 600 .env secrets/openiddict.pfx
+rm secrets/openiddict.key secrets/openiddict.crt
+```
+
+Build and start the stack:
+
+```bash
+docker compose up -d --build
+docker compose ps
+docker compose logs -f app caddy
+```
+
+Caddy obtains and renews the public TLS certificate automatically. PostgreSQL is not published to the internet. The named `postgres_data` volume holds the database across container replacements. The first startup waits for PostgreSQL, runs the migrator, then starts the host.
+
+For updates, pull the latest code and run `docker compose up -d --build`. Back up PostgreSQL before updates and store backups off the VPS:
+
+```bash
+docker compose exec -T db sh -c 'pg_dump -U "$POSTGRES_USER" "$POSTGRES_DB"' > dineprox-$(date +%F).sql
+```
+
+**Runtime support:** the application currently targets .NET 9, whose support ended in May 2026. Upgrade the application and its dependencies to a supported .NET version before using this deployment for production; the Docker image currently follows the repository's existing target framework.
+
 ### Additional resources
 
 You can see the following resources to learn more about your solution and the ABP Framework:
