@@ -15,11 +15,25 @@ jobs:
 
       - name: Execute Remote SSH Commands
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          OPENIDDICT_PFX_BASE64: ${{ secrets.OPENIDDICT_PFX_BASE64 }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          envs: OPENIDDICT_PFX_BASE64
           script: |
+            set -eu
             cd ~/DineProX
             git pull origin VPSWithDomain
+            if [ ! -s secrets/openiddict.pfx ]; then
+              if [ -z "${OPENIDDICT_PFX_BASE64:-}" ]; then
+                echo "Missing GitHub Actions secret OPENIDDICT_PFX_BASE64; configure it with the base64-encoded OpenIddict PFX."
+                exit 1
+              fi
+              mkdir -p secrets
+              printf '%s' "$OPENIDDICT_PFX_BASE64" | base64 --decode > secrets/openiddict.pfx.tmp
+              chmod 600 secrets/openiddict.pfx.tmp
+              mv secrets/openiddict.pfx.tmp secrets/openiddict.pfx
+            fi
             docker compose --env-file .env up -d --build
