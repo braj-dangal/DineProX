@@ -22,4 +22,4 @@ jobs:
           script: |
             cd ~/DineProX
             git pull origin VPSWithDomain
-            docker compose up -d --build
+            docker compose --env-file .env up -d --build
